@@ -1,0 +1,11 @@
+package com.orbital.util;
+
+/**
+ * Node types for HIR analysis.
+ */
+public enum NodeType {
+    LITERAL, CHAR_CLASS, PAIR, CONCAT, UNION,
+    QUANTIFIER, GROUP, ANCHOR, EPSILON, BACKREF,
+    ANONYMOUS, ALTERNATIVE, CAPTURE, LOOKAHEAD,
+    LOOKAHEAD_NEG, BACKTRACK, ACCEPT, FAIL
+}
