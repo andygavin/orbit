@@ -1,16 +1,14 @@
-package com.orbital.api;
+package com.orbit.api;
+
+import java.util.Objects;
 
 /**
  * Token representing a matched text.
  */
 public record MatchToken(String type, String value, int start, int end) implements Token {
     public MatchToken {
-        if (type == null) {
-            throw new NullPointerException("Type cannot be null");
-        }
-        if (value == null) {
-            throw new NullPointerException("Value cannot be null");
-        }
+        Objects.requireNonNull(type, "Type cannot be null");
+        Objects.requireNonNull(value, "Value cannot be null");
         if (start < 0) {
             throw new IllegalArgumentException("Start position cannot be negative");
         }

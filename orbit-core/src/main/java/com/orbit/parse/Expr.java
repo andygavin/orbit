@@ -1,15 +1,16 @@
-package com.orbital.parse;
+package com.orbit.parse;
 
-import com.orbital.parse.CharClass;
-import com.orbital.parse.Anchor;
-import com.orbital.parse.Backref;
-import com.orbital.parse.Concat;
-import com.orbital.parse.Epsilon;
-import com.orbital.parse.Group;
-import com.orbital.parse.Literal;
-import com.orbital.parse.Pair;
-import com.orbital.parse.Quantifier;
-import com.orbital.parse.Union;
+import com.orbit.parse.CharClass;
+import com.orbit.parse.Anchor;
+import com.orbit.parse.Backref;
+import com.orbit.parse.Concat;
+import com.orbit.parse.Epsilon;
+import com.orbit.parse.Group;
+import com.orbit.parse.Literal;
+import com.orbit.parse.Pair;
+import com.orbit.parse.Quantifier;
+import com.orbit.parse.Union;
+import com.orbit.util.SourceSpan;
 
 /**
  * Sealed AST hierarchy representing regular expressions.
@@ -17,7 +18,9 @@ import com.orbital.parse.Union;
  */
 public sealed interface Expr permits
     Literal, CharClass, Pair, Concat, Union,
-    Quantifier, Group, Anchor, Epsilon, Backref {
+    Quantifier, Group, Anchor, Epsilon, Backref,
+    FlagExpr, LookaheadExpr, LookbehindExpr, AtomicGroup,
+    BalanceGroupExpr, ConditionalExpr, KeepAssertion {
 
     /**
      * Returns the source location information for this expression.

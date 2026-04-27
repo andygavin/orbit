@@ -1,14 +1,11 @@
-package com.orbital.prefilter;
+package com.orbit.prefilter;
 
-import com.orbital.prefilter.NoopPrefilter;
-import com.orbital.prefilter.VectorLiteralPrefilter;
-import com.orbital.prefilter.AhoCorasickPrefilter;
-import com.orbital.prefilter.LiteralIndexOfPrefilter;
+import com.orbit.prefilter.AhoCorasickPrefilter;
+import com.orbit.prefilter.LiteralIndexOfPrefilter;
+import com.orbit.prefilter.NoopPrefilter;
+import com.orbit.prefilter.VectorLiteralPrefilter;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.AfterAll;
+import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.Assertions.*;
 
@@ -28,7 +25,9 @@ class PrefilterTest {
         Prefilter prefilter = new VectorLiteralPrefilter(literals);
 
         assertEquals(0, prefilter.findFirst("test string", 0, 11));
-        assertEquals(6, prefilter.findFirst("hello world", 0, 11));
+        // "hello" is at position 0; "test" not present — first literal match is "hello" at 0
+        assertEquals(0, prefilter.findFirst("hello world", 0, 11));
+        // "test" is the first literal in the list; it is found at position 6 in "world test"
         assertEquals(6, prefilter.findFirst("world test", 0, 10));
         assertEquals(-1, prefilter.findFirst("no match", 0, 8));
         assertFalse(prefilter.isTrivial());
@@ -52,8 +51,10 @@ class PrefilterTest {
         Prefilter prefilter = new AhoCorasickPrefilter(literals, false);
 
         assertEquals(0, prefilter.findFirst("test string", 0, 11));
-        assertEquals(6, prefilter.findFirst("hello world", 0, 11));
-        assertEquals(6, prefilter.findFirst("world test", 0, 10));
+        // AhoCorasick scans positions left to right; at pos=0, "hello" matches
+        assertEquals(0, prefilter.findFirst("hello world", 0, 11));
+        // AhoCorasick scans positions left to right; at pos=0, "world" matches
+        assertEquals(0, prefilter.findFirst("world test", 0, 10));
         assertEquals(-1, prefilter.findFirst("no match", 0, 8));
         assertFalse(prefilter.isTrivial());
     }
@@ -64,8 +65,10 @@ class PrefilterTest {
         Prefilter prefilter = new AhoCorasickPrefilter(literals, true);
 
         assertEquals(0, prefilter.findFirst("test string", 0, 11));
-        assertEquals(6, prefilter.findFirst("hello world", 0, 11));
-        assertEquals(6, prefilter.findFirst("world test", 0, 10));
+        // AhoCorasick scans positions left to right; at pos=0, "hello" matches
+        assertEquals(0, prefilter.findFirst("hello world", 0, 11));
+        // AhoCorasick scans positions left to right; at pos=0, "world" matches
+        assertEquals(0, prefilter.findFirst("world test", 0, 10));
         assertEquals(-1, prefilter.findFirst("no match", 0, 8));
         assertFalse(prefilter.isTrivial());
     }
@@ -75,7 +78,8 @@ class PrefilterTest {
         Prefilter prefilter = new LiteralIndexOfPrefilter("test");
 
         assertEquals(0, prefilter.findFirst("test string", 0, 11));
-        assertEquals(5, prefilter.findFirst("hello test", 0, 10));
+        // "test" starts at index 6 in "hello test" (h=0,e=1,l=2,l=3,o=4,' '=5,t=6)
+        assertEquals(6, prefilter.findFirst("hello test", 0, 10));
         assertEquals(-1, prefilter.findFirst("hello world", 0, 10));
         assertEquals(-1, prefilter.findFirst("", 0, 0));
         assertFalse(prefilter.isTrivial());
@@ -147,7 +151,8 @@ class PrefilterTest {
     @Test
     void testPrefilterNullLiterals() {
         assertThrows(NullPointerException.class, () -> new VectorLiteralPrefilter(null));
-        assertThrows(IllegalArgumentException.class, () -> new VectorLiteralPrefilter(List.of((String) null)));
+        // List.of rejects null elements with NullPointerException before the constructor is reached
+        assertThrows(NullPointerException.class, () -> new VectorLiteralPrefilter(List.of((String) null)));
     }
 
     @Test

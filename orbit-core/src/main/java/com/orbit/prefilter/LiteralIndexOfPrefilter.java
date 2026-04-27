@@ -1,4 +1,4 @@
-package com.orbital.prefilter;
+package com.orbit.prefilter;
 
 /**
  * Prefilter using simple String.indexOf for literal search.

@@ -1,4 +1,4 @@
-package com.orbital.prog;
+package com.orbit.prog;
 
 /**
  * Beginning of text assertion.

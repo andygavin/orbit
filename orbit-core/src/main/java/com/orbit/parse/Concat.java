@@ -1,5 +1,6 @@
-package com.orbital.parse;
+package com.orbit.parse;
 
+import com.orbit.util.SourceSpan;
 import java.util.List;
 
 /**
@@ -22,6 +23,9 @@ public record Concat(List<Expr> parts) implements Expr {
 
     @Override
     public SourceSpan span() {
-        return SourceSpan.combine(parts);
+        SourceSpan[] spans = parts.stream()
+            .map(Expr::span)
+            .toArray(SourceSpan[]::new);
+        return SourceSpan.combine(spans);
     }
 }

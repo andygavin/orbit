@@ -1,10 +1,9 @@
-package com.orbital;
+package com.orbit;
 
-import com.orbital.api.Pattern;
-import com.orbital.api.Matcher;
+import com.orbit.api.Matcher;
+import com.orbit.api.Pattern;
+import com.orbit.util.PatternFlag;
 import org.junit.jupiter.api.Test;
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
 import static org.junit.jupiter.api.Assertions.*;
 
 class PatternCompatibilityIT {
@@ -17,7 +16,7 @@ class PatternCompatibilityIT {
         assertEquals("hello", orbitMatcher.group());
 
         java.util.regex.Pattern javaPattern = java.util.regex.Pattern.compile("hello");
-        Matcher javaMatcher = javaPattern.matcher("hello world");
+        java.util.regex.Matcher javaMatcher = javaPattern.matcher("hello world");
         assertTrue(javaMatcher.find());
         assertEquals("hello", javaMatcher.group());
     }
@@ -32,7 +31,7 @@ class PatternCompatibilityIT {
         assertEquals("llo", orbitMatcher.group(2));
 
         java.util.regex.Pattern javaPattern = java.util.regex.Pattern.compile("(he)(llo)");
-        Matcher javaMatcher = javaPattern.matcher("hello");
+        java.util.regex.Matcher javaMatcher = javaPattern.matcher("hello");
         assertTrue(javaMatcher.matches());
         assertEquals("hello", javaMatcher.group());
         assertEquals("he", javaMatcher.group(1));
@@ -72,7 +71,7 @@ class PatternCompatibilityIT {
         assertTrue(orbitMatcher.matches());
 
         java.util.regex.Pattern javaPattern = java.util.regex.Pattern.compile("^hello$");
-        Matcher javaMatcher = javaPattern.matcher("hello");
+        java.util.regex.Matcher javaMatcher = javaPattern.matcher("hello");
         assertTrue(javaMatcher.matches());
     }
 
@@ -83,7 +82,7 @@ class PatternCompatibilityIT {
         assertTrue(orbitMatcher.matches());
 
         java.util.regex.Pattern javaPattern = java.util.regex.Pattern.compile("a+b");
-        Matcher javaMatcher = javaPattern.matcher("aaab");
+        java.util.regex.Matcher javaMatcher = javaPattern.matcher("aaab");
         assertTrue(javaMatcher.matches());
     }
 
@@ -94,7 +93,7 @@ class PatternCompatibilityIT {
         assertTrue(orbitMatcher.matches());
 
         java.util.regex.Pattern javaPattern = java.util.regex.Pattern.compile("[abc]");
-        Matcher javaMatcher = javaPattern.matcher("a");
+        java.util.regex.Matcher javaMatcher = javaPattern.matcher("a");
         assertTrue(javaMatcher.matches());
     }
 
@@ -105,7 +104,7 @@ class PatternCompatibilityIT {
         assertTrue(orbitMatcher.matches());
 
         java.util.regex.Pattern javaPattern = java.util.regex.Pattern.compile(".");
-        Matcher javaMatcher = javaPattern.matcher("a");
+        java.util.regex.Matcher javaMatcher = javaPattern.matcher("a");
         assertTrue(javaMatcher.matches());
     }
 
@@ -116,13 +115,13 @@ class PatternCompatibilityIT {
         assertTrue(orbitMatcher.matches());
 
         java.util.regex.Pattern javaPattern = java.util.regex.Pattern.compile("a|b");
-        Matcher javaMatcher = javaPattern.matcher("a");
+        java.util.regex.Matcher javaMatcher = javaPattern.matcher("a");
         assertTrue(javaMatcher.matches());
     }
 
     @Test
     void testComplexPattern() {
-        Pattern orbitPattern = Pattern.compile("(\d{3})-(\d{3})-(\d{4})");
+        Pattern orbitPattern = Pattern.compile("(\\d{3})-(\\d{3})-(\\d{4})");
         Matcher orbitMatcher = orbitPattern.matcher("123-456-7890");
         assertTrue(orbitMatcher.matches());
         assertEquals("123-456-7890", orbitMatcher.group());
@@ -130,8 +129,8 @@ class PatternCompatibilityIT {
         assertEquals("456", orbitMatcher.group(2));
         assertEquals("7890", orbitMatcher.group(3));
 
-        java.util.regex.Pattern javaPattern = java.util.regex.Pattern.compile("(\d{3})-(\d{3})-(\d{4})");
-        Matcher javaMatcher = javaPattern.matcher("123-456-7890");
+        java.util.regex.Pattern javaPattern = java.util.regex.Pattern.compile("(\\d{3})-(\\d{3})-(\\d{4})");
+        java.util.regex.Matcher javaMatcher = javaPattern.matcher("123-456-7890");
         assertTrue(javaMatcher.matches());
         assertEquals("123-456-7890", javaMatcher.group());
         assertEquals("123", javaMatcher.group(1));
@@ -146,7 +145,7 @@ class PatternCompatibilityIT {
         assertTrue(orbitMatcher.matches());
 
         java.util.regex.Pattern javaPattern = java.util.regex.Pattern.compile("[\u00e9\u00e8]");
-        Matcher javaMatcher = javaPattern.matcher("\u00e9");
+        java.util.regex.Matcher javaMatcher = javaPattern.matcher("\u00e9");
         assertTrue(javaMatcher.matches());
     }
 
@@ -157,7 +156,7 @@ class PatternCompatibilityIT {
         assertTrue(orbitMatcher.matches());
 
         java.util.regex.Pattern javaPattern = java.util.regex.Pattern.compile("hello", java.util.regex.Pattern.CASE_INSENSITIVE);
-        Matcher javaMatcher = javaPattern.matcher("HELLO");
+        java.util.regex.Matcher javaMatcher = javaPattern.matcher("HELLO");
         assertTrue(javaMatcher.matches());
     }
 
@@ -170,6 +169,7 @@ class PatternCompatibilityIT {
         assertEquals(2, split.length);
 
         String quoted = Pattern.quote("hello.world");
-        assertEquals("hello\\.world", quoted);
+        // Pattern.quote wraps in \Q...\E, matching java.util.regex.Pattern.quote behavior.
+        assertEquals("\\Qhello.world\\E", quoted);
     }
 }

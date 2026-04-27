@@ -1,4 +1,4 @@
-package com.orbital.prog;
+package com.orbit.prog;
 
 /**
  * Emit output string in a transducer.

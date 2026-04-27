@@ -1,4 +1,4 @@
-package com.orbital.prog;
+package com.orbit.prog;
 
 /**
  * Epsilon transition (no character consumed).

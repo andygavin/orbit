@@ -1,0 +1,39 @@
+// ── Prose typography ──────────────────────────────────────────────────────
+
+.main-content {
+  p {
+    text-align: justify;
+    hyphens: auto;
+    -webkit-hyphens: auto;
+    line-height: 1.75;
+  }
+
+  // Keep code inline with surrounding text rhythm
+  p > code {
+    hyphens: none;
+  }
+
+  // Don't justify short items where it looks awkward
+  li {
+    text-align: left;
+    line-height: 1.7;
+  }
+
+  // Headings stay left-aligned
+  h1, h2, h3, h4, h5, h6 {
+    text-align: left;
+    hyphens: none;
+  }
+
+  // Code blocks always left-aligned
+  pre {
+    text-align: left;
+    hyphens: none;
+  }
+
+  // Slightly wider measure for prose comfort on large screens
+  @media (min-width: 1200px) {
+    font-size: 1.0rem;
+    max-width: 78ch;
+  }
+}

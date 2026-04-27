@@ -1,4 +1,4 @@
-package com.orbital.hir;
+package com.orbit.hir;
 
 import java.util.Collections;
 import java.util.List;
@@ -26,8 +26,10 @@ public record LiteralSet(
         if (innerLiterals == null) {
             throw new NullPointerException("Inner literals cannot be null");
         }
-        if (innerLiterals.contains(null)) {
-            throw new NullPointerException("Inner literals cannot contain null");
+        for (String item : innerLiterals) {
+            if (item == null) {
+                throw new NullPointerException("Inner literals cannot contain null");
+            }
         }
     }
 }

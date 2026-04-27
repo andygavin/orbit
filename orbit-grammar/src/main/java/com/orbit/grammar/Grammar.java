@@ -1,31 +1,52 @@
-package com.orbital.grammar;
+package com.orbit.grammar;
 
-import com.orbital.parse.Expr;
-import com.orbital.parse.Parser;
-import com.orbital.parse.PatternSyntaxException;
-import com.orbital.prog.CompileResult;
-import com.orbital.prog.Prog;
-import com.orbital.prog.Metadata;
-import com.orbital.util.EngineHint;
-import com.orbital.prefilter.Prefilter;
+import com.orbit.parse.Expr;
+import com.orbit.parse.Parser;
+import com.orbit.parse.PatternSyntaxException;
+import com.orbit.prog.CompileResult;
+import com.orbit.prog.Prog;
+import com.orbit.prog.Metadata;
+import com.orbit.util.EngineHint;
+import com.orbit.prefilter.Prefilter;
 
+import java.lang.annotation.Repeatable;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 /**
  * Grammar system inspired by Raku's grammar system.
  */
 public final class Grammar {
 
-    private final Map<String, Rule> rules;
+    private final Map<String, RuleDefinition> rules;
     private final Expr rootRule;
 
-    private Grammar(Map<String, Rule> rules, Expr rootRule) {
+    private Grammar(Map<String, RuleDefinition> rules, Expr rootRule) {
         this.rules = rules;
         this.rootRule = rootRule;
+    }
+
+    /**
+     * Returns an unmodifiable view of the compiled rule definitions, keyed by rule name.
+     *
+     * @return the rule map, never null
+     */
+    public Map<String, RuleDefinition> getRules() {
+        return Collections.unmodifiableMap(rules);
+    }
+
+    /**
+     * Returns the root rule expression, or null if no root rule was declared.
+     *
+     * @return the root expression
+     */
+    public Expr getRootRule() {
+        return rootRule;
     }
 
     /**
@@ -36,30 +57,58 @@ public final class Grammar {
             throw new NullPointerException("Grammar class cannot be null");
         }
 
-        Map<String, Rule> rules = new HashMap<>();
+        Map<String, RuleDefinition> rules = new HashMap<>();
         Expr rootRule = null;
+        String rootRuleName = null;
 
+        // Process @Rule annotations on the class itself
+        for (Rule annotation : grammarClass.getAnnotationsByType(Rule.class)) {
+            String ruleName = annotation.name().isEmpty() ? grammarClass.getSimpleName() : annotation.name();
+            try {
+                Expr expr = Parser.parse(annotation.value());
+                rules.put(ruleName, new RuleDefinition(ruleName, expr, null));
+                if (annotation.isRoot()) {
+                    if (rootRule != null) {
+                        throw new GrammarException("Multiple root rules defined: " +
+                            rootRuleName + " and " + ruleName);
+                    }
+                    rootRule = expr;
+                    rootRuleName = ruleName;
+                }
+            } catch (PatternSyntaxException e) {
+                throw new GrammarException("Invalid syntax in rule '" + ruleName + "': " + e.getMessage(), e);
+            }
+        }
+
+        // Process @Rule annotations on methods
         for (Method method : grammarClass.getDeclaredMethods()) {
-            if (method.isAnnotationPresent(Rule.class)) {
-                Rule annotation = method.getAnnotation(Rule.class);
+            for (Rule annotation : method.getAnnotationsByType(Rule.class)) {
                 String ruleName = annotation.name().isEmpty() ? method.getName() : annotation.name();
-
-                // Parse the rule expression
                 try {
                     Expr expr = Parser.parse(annotation.value());
-                    Rule rule = new Rule(ruleName, expr, method);
+                    RuleDefinition rule = new RuleDefinition(ruleName, expr, method);
                     rules.put(ruleName, rule);
-
-                    // Check if this is the root rule
                     if (annotation.isRoot()) {
                         if (rootRule != null) {
                             throw new GrammarException("Multiple root rules defined: " +
-                                rootRule.ruleName() + " and " + ruleName);
+                                rootRuleName + " and " + ruleName);
                         }
                         rootRule = expr;
+                        rootRuleName = ruleName;
                     }
                 } catch (PatternSyntaxException e) {
                     throw new GrammarException("Invalid syntax in rule '" + ruleName + "': " + e.getMessage(), e);
+                }
+            }
+        }
+
+        // Link unannotated methods as action methods when their name matches a rule name
+        for (Method method : grammarClass.getDeclaredMethods()) {
+            if (method.getAnnotationsByType(Rule.class).length == 0) {
+                RuleDefinition existing = rules.get(method.getName());
+                if (existing != null && existing.actionMethod() == null) {
+                    rules.put(method.getName(),
+                        new RuleDefinition(existing.ruleName(), existing.expression(), method));
                 }
             }
         }
@@ -108,14 +157,14 @@ public final class Grammar {
     }
 
     /**
-     * Rule definition.
+     * Compiled rule definition, holding the rule name, parsed expression, and action method.
      */
-    public static class Rule {
+    public static class RuleDefinition {
         private final String ruleName;
         private final Expr expression;
         private final Method actionMethod;
 
-        public Rule(String ruleName, Expr expression, Method actionMethod) {
+        public RuleDefinition(String ruleName, Expr expression, Method actionMethod) {
             this.ruleName = ruleName;
             this.expression = expression;
             this.actionMethod = actionMethod;
@@ -176,11 +225,24 @@ public final class Grammar {
     }
 
     /**
-     * Rule annotation.
+     * Container annotation enabling multiple {@link Rule} annotations on a single element.
      */
+    @Retention(RetentionPolicy.RUNTIME)
+    public @interface Rules {
+        Rule[] value();
+    }
+
+    /**
+     * Rule annotation; may be applied multiple times to define several rules on one element.
+     */
+    @Repeatable(Rules.class)
+    @Retention(RetentionPolicy.RUNTIME)
     public @interface Rule {
+        /** The rule name; defaults to the annotated method name when empty. */
         String name() default "";
+        /** The pattern expression for this rule; must not be blank. */
         String value();
+        /** Whether this rule is the root (entry) rule of the grammar. */
         boolean isRoot() default false;
     }
 }

@@ -5,9 +5,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.orbit</groupId>
+        <groupId>io.github.andygavin</groupId>
         <artifactId>orbit-parent</artifactId>
-        <version>0.1.0-SNAPSHOT</version>
+        <version>0.1-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>orbit-benchmarks</artifactId>
@@ -19,11 +20,10 @@
     <dependencies>
         <!-- Core library -->
         <dependency>
-            <groupId>com.orbit</groupId>
+            <groupId>io.github.andygavin</groupId>
             <artifactId>orbit-core</artifactId>
-            <version>0.1.0-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
-
         <!-- JMH -->
         <dependency>
             <groupId>org.openjdk.jmh</groupId>
@@ -35,6 +35,13 @@
             <artifactId>jmh-generator-annprocess</artifactId>
             <version>1.37</version>
             <scope>provided</scope>
+        </dependency>
+
+        <!-- re2j: baseline comparison for linear-time regex throughput -->
+        <dependency>
+            <groupId>com.google.re2j</groupId>
+            <artifactId>re2j</artifactId>
+            <version>1.7</version>
         </dependency>
 
         <!-- Test dependencies -->

@@ -1,4 +1,4 @@
-package com.orbital.util;
+package com.orbit.util;
 
 /**
  * Source code location information.

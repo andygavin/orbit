@@ -1,0 +1,8 @@
+source "https://rubygems.org"
+
+# For local development. GitHub Pages uses remote_theme so this gem
+# only needs to match the version pinned in _config.yml.
+gem "just-the-docs", "~> 0.10"
+gem "jekyll", "~> 4.3"
+gem "jekyll-remote-theme"
+gem "jekyll-seo-tag"

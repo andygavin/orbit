@@ -1,9 +1,9 @@
-package com.orbital.grammar;
+package com.orbit.grammar;
 
-import com.orbital.grammar.Grammar;
-import com.orbital.parse.Expr;
-import com.orbital.parse.Parser;
-import com.orbital.parse.PatternSyntaxException;
+import com.orbit.grammar.Grammar;
+import com.orbit.parse.Expr;
+import com.orbit.parse.Parser;
+import com.orbit.parse.PatternSyntaxException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.AfterEach;
@@ -18,16 +18,16 @@ class GrammarTest {
     void testCompileSimpleGrammar() throws Exception {
         Grammar grammar = Grammar.compile(SimpleGrammar.class);
         assertNotNull(grammar);
-        assertEquals("root", grammar.rules.get("root").ruleName());
-        assertEquals("expr", grammar.rules.get("expr").ruleName());
+        assertEquals("root", grammar.getRules().get("root").ruleName());
+        assertEquals("expr", grammar.getRules().get("expr").ruleName());
     }
 
     @Test
     void testCompileWithRootRule() throws Exception {
         Grammar grammar = Grammar.compile(RootGrammar.class);
         assertNotNull(grammar);
-        assertNotNull(grammar.rootRule);
-        assertEquals("root", grammar.rules.get("root").ruleName());
+        assertNotNull(grammar.getRootRule());
+        assertEquals("root", grammar.getRules().get("root").ruleName());
     }
 
     @Test
@@ -89,13 +89,13 @@ class GrammarTest {
     @Test
     void testRuleAnnotation() throws Exception {
         Grammar grammar = Grammar.compile(NamedRulesGrammar.class);
-        assertNotNull(grammar.rules.get("custom_name"));
+        assertNotNull(grammar.getRules().get("custom_name"));
     }
 
     @Test
     void testActionMethod() throws Exception {
         Grammar grammar = Grammar.compile(ActionGrammar.class);
-        assertNotNull(grammar.rules.get("expr").actionMethod());
+        assertNotNull(grammar.getRules().get("expr").actionMethod());
     }
 
     @Test
@@ -116,7 +116,9 @@ class GrammarTest {
 
     @Test
     void testParseTreeNullInput() throws Exception {
-        Grammar.ParseTree tree = new Grammar.ParseTree(new SimpleGrammar().expr(), null);
+        // Create a tree with a non-null expression obtained from compiling a grammar
+        Grammar grammar = Grammar.compile(SimpleGrammar.class);
+        Grammar.ParseTree tree = new Grammar.ParseTree(grammar.getRootRule(), null);
         assertNotNull(tree.matchedRule());
         assertNull(tree.input());
     }
@@ -132,8 +134,8 @@ class GrammarTest {
     }
 
     @Test
-    void testRuleAnnotationAttributes() throws Exception {
-        Grammar.Rule rule = new Grammar.Rule("test", null, null);
+    void testRuleDefinitionAttributes() throws Exception {
+        Grammar.RuleDefinition rule = new Grammar.RuleDefinition("test", null, null);
         assertEquals("test", rule.ruleName());
         assertNull(rule.expression());
         assertNull(rule.actionMethod());
@@ -167,13 +169,13 @@ class GrammarTest {
         void expr() {}
     }
 
-    @Grammar.Rule(name = "custom_name", value = "expr")
+    @Grammar.Rule(name = "custom_name", value = "expr", isRoot = true)
     static class NamedRulesGrammar {
         @Grammar.Rule(name = "expr", value = "[a-z]+")
         void expr() {}
     }
 
-    @Grammar.Rule(name = "expr", value = "[a-z]+")
+    @Grammar.Rule(name = "expr", value = "[a-z]+", isRoot = true)
     static class ActionGrammar {
         void expr() {} // Action method
     }

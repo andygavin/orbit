@@ -1,7 +1,7 @@
-package com.orbital;
+package com.orbit;
 
-import com.orbital.api.Pattern;
-import com.orbital.api.Matcher;
+import com.orbit.api.Pattern;
+import com.orbit.api.Matcher;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -33,7 +33,7 @@ class MatcherTest {
     @Test
     void testFindMultiple() {
         Pattern pattern = Pattern.compile("o");
-        Matcher matcher = pattern.matcher("hello");
+        Matcher matcher = pattern.matcher("hello world");
         assertTrue(matcher.find());
         assertEquals(4, matcher.start());
         assertTrue(matcher.find());
@@ -86,8 +86,12 @@ class MatcherTest {
 
     @Test
     void testEmptyPattern() {
+        // An empty pattern matches only the empty string; it does not match "test"
         Pattern pattern = Pattern.compile("");
         Matcher matcher = pattern.matcher("test");
+        assertFalse(matcher.matches());
+        // But an empty pattern does match an empty string
+        matcher = pattern.matcher("");
         assertTrue(matcher.matches());
     }
 

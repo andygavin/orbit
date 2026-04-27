@@ -1,15 +1,19 @@
-package com.orbital.prog;
+package com.orbit.prog;
 
-import java.io.Serializable;
+import com.orbit.prefilter.Prefilter;
 
 /**
  * Thread-safe compilation result.
+ *
+ * <p>This record is not serializable. The {@link com.orbit.api.Pattern} class serializes only
+ * the pattern string and flags, and recompiles on deserialization; {@code CompileResult} is
+ * never written to a serialization stream.
  */
 public record CompileResult(
     Prog prog,
     Prefilter prefilter,
     Metadata metadata
-) implements Serializable {
+) {
     public CompileResult {
         if (prog == null) {
             throw new NullPointerException("Prog cannot be null");

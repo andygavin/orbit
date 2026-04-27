@@ -1,4 +1,4 @@
-package com.orbital.prefilter;
+package com.orbit.prefilter;
 
 /**
  * Sealed prefilter hierarchy for fast path filtering.

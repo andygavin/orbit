@@ -1,0 +1,67 @@
+title: Orbit
+description: >-
+  Java 21 regex engine — linear-time guarantees, drop-in
+  java.util.regex compatibility, and a lexical transducer API.
+
+remote_theme: just-the-docs/just-the-docs@v0.10.0
+
+url: "https://andygavin.github.io"
+baseurl: "/orbit"
+
+markdown: kramdown
+highlighter: rouge
+
+# Apply just-the-docs layout to all pages by default
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: "default"
+
+# Suppress Sass deprecation noise from just-the-docs internals
+sass:
+  quiet_deps: true
+
+# Exclude internal and generated directories from Jekyll processing
+exclude:
+  - design/
+  - Gemfile
+  - Gemfile.lock
+  - serve.sh
+
+# ── just-the-docs settings ─────────────────────────────────────────────────
+
+color_scheme: light
+
+search_enabled: true
+search:
+  heading_level: 2
+  previews: 3
+  preview_words_before: 5
+  preview_words_after: 10
+  rel_url: true
+  button: false
+
+heading_anchors: true
+back_to_top: true
+back_to_top_text: "Back to top"
+
+# Header links (top-right)
+aux_links:
+  "Javadoc":
+    - "/orbit/javadoc/"
+  "GitHub":
+    - "https://github.com/andygavin/orbit"
+
+aux_links_new_tab: true
+
+# Footer
+footer_content: >-
+  Copyright &copy; 2024&ndash;2025 Andy Gavin.
+  Distributed under the
+  <a href="https://www.apache.org/licenses/LICENSE-2.0.txt">Apache License 2.0</a>.
+
+# ── Plugins ────────────────────────────────────────────────────────────────
+plugins:
+  - jekyll-remote-theme
+  - jekyll-seo-tag

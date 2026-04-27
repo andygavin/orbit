@@ -1,6 +1,7 @@
-package com.orbital.prefilter;
+package com.orbit.prefilter;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Aho-Corasick multi-pattern string matching algorithm.
@@ -9,6 +10,10 @@ public record AhoCorasickPrefilter(List<String> literals, boolean nfaMode) imple
 
     @Override
     public int findFirst(String input, int from, int to) {
+        Objects.requireNonNull(input, "input cannot be null");
+        if (from < 0 || to < 0 || from > to) {
+            throw new IllegalArgumentException("Invalid range: from=" + from + ", to=" + to);
+        }
         // Simple implementation for now
         for (int i = from; i <= to; i++) {
             for (String literal : literals) {

@@ -1,0 +1,25 @@
+# Test cases for Grapheme Cluster compatibility testing
+# Format inspired by Unicode's GraphemeBreakTest.txt
+# Each line contains a sequence of codepoints with '×' (no break) and '÷' (break) markers
+
+# Basic examples
+÷ a ÷ b ÷ c
+÷ a × b × c ÷ d ÷ e
+÷ 61 ÷ 62 ÷ 63
+
+# Emoji sequences (from Unicode)
+÷ 1F468 × 200D × 1F469 × 200D × 1F467
+÷ 1F468 ÷ 1F3FE ÷ 1F468 × 200D × 1F469 × 200D × 1F467
+
+# Complex grapheme clusters
+÷ 1F468 × 1F3FE × 200D × 1F469 × 200D × 1F467
+÷ 1F1E6 × 1F1F7 (flag sequence)
+÷ 1F468 × 1F3FE (emoji with skin tone)
+
+# Combining characters
+÷ 61 × 0301 (a + acute accent = á)
+÷ 61 × 0300 (a + grave accent = à)
+
+# ZWJ sequences
+÷ 1F469 × 200D × 2764 × 200D × 1F48B
+÷ 1F3F4 × E0067 × E0062 × E0077 × E0065 × E006F × E0062 × E0065 × E006F × E0073 (rainbow flag)

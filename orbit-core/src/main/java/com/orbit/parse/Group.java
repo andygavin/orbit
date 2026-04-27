@@ -1,4 +1,6 @@
-package com.orbital.parse;
+package com.orbit.parse;
+
+import com.orbit.util.SourceSpan;
 
 /**
  * Group expression with optional name and index.

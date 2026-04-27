@@ -1,4 +1,4 @@
-package com.orbital.parse;
+package com.orbit.parse;
 
 /**
  * Character range within a char class.

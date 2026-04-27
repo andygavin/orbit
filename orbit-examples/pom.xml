@@ -5,9 +5,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.orbit</groupId>
+        <groupId>io.github.andygavin</groupId>
         <artifactId>orbit-parent</artifactId>
-        <version>0.1.0-SNAPSHOT</version>
+        <version>0.1-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>orbit-examples</artifactId>
@@ -19,16 +20,16 @@
     <dependencies>
         <!-- Core library -->
         <dependency>
-            <groupId>com.orbit</groupId>
+            <groupId>io.github.andygavin</groupId>
             <artifactId>orbit-core</artifactId>
-            <version>0.1.0-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
 
         <!-- Optional grammar module -->
         <dependency>
-            <groupId>com.orbit</groupId>
+            <groupId>io.github.andygavin</groupId>
             <artifactId>orbit-grammar</artifactId>
-            <version>0.1.0-SNAPSHOT</version>
+            <version>${project.version}</version>
             <optional>true</optional>
         </dependency>
 

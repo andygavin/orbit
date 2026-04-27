@@ -1,4 +1,4 @@
-package com.orbital.api;
+package com.orbit.api;
 
 /**
  * Sealed token hierarchy for structured output.

@@ -1,13 +1,13 @@
-package com.orbital.api;
+package com.orbit.api;
+
+import java.util.Objects;
 
 /**
  * Token representing an error.
  */
 public record ErrorToken(String message, int start, int end) implements Token {
     public ErrorToken {
-        if (message == null) {
-            throw new NullPointerException("Message cannot be null");
-        }
+        Objects.requireNonNull(message, "Message cannot be null");
         if (start < 0) {
             throw new IllegalArgumentException("Start position cannot be negative");
         }
