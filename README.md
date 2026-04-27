@@ -1,4 +1,13 @@
-# Orbit — Java 21 Regex Engine
+<p align="center">
+  <img src="docs/logo.jpg" alt="Orbit" width="220" />
+</p>
+
+<h1 align="center">Orbit — Java 21 Regex Engine</h1>
+
+<p align="center">
+  <a href="https://andygavin.github.io/orbit/">Documentation</a> ·
+  <a href="https://andygavin.github.io/orbit/javadoc/">Javadoc</a>
+</p>
 
 **Version:** 0.1.0-SNAPSHOT
 
